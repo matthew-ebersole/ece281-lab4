@@ -91,17 +91,13 @@ begin
             o_clk => clk_slow
         );
 
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            if tdm_count = to_unsigned(SEG_LIMIT -1, 17) then
-                tdm_count <= (others => '0');
-                clk_tdm <= not clk_tdm;
-            else
-                tdm_count <= tdm_count + 1;
-            end if;
-        end if;
-    end process;
+    clk_divider_tdm: clock_divider
+        generic map (k_DIV => SEG_LIMIT)
+        port map(
+            i_clk   => clk,
+            i_reset => clk_reset,
+            o_clk   => clk_tdm
+        );
 
     fsm_inst1: elevator_controller_fsm
         port map(
